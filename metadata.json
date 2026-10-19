@@ -1,0 +1,6 @@
+{
+  "name": "测测你的SM属性吧 - 经典性格分支测试",
+  "description": "基于经典流程图的趣味性格测试，回答生活场景小问题，探索你的S/M属性与8大隐藏性格画像！",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
