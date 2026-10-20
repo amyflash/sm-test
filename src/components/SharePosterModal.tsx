@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { X, Download, Copy, Check, Sparkles, Smartphone } from 'lucide-react';
 import { PersonalityResult } from '../types';
 import { playTapSound } from '../utils/audio';
+import { trackPosterDownload, trackCopyShareText } from '../utils/analytics';
 
 interface SharePosterModalProps {
   result: PersonalityResult;
@@ -202,6 +203,7 @@ export const SharePosterModal: React.FC<SharePosterModalProps> = ({
       await navigator.clipboard.writeText(text);
       setCopied(true);
       playTapSound(750);
+      trackCopyShareText(result.id);
       setTimeout(() => setCopied(false), 2500);
     } catch {
       // Fallback
@@ -212,6 +214,7 @@ export const SharePosterModal: React.FC<SharePosterModalProps> = ({
   const handleDownload = () => {
     if (!renderedImageUrl) return;
     playTapSound(650);
+    trackPosterDownload(result.id, result.title);
     const link = document.createElement('a');
     link.download = `SM属性测试_NO${result.id}_${result.title}.png`;
     link.href = renderedImageUrl;

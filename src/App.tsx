@@ -28,6 +28,11 @@ import {
   playFanfareSound,
   playTapSound 
 } from './utils/audio';
+import { 
+  trackQuizAnswer, 
+  trackQuizComplete, 
+  trackTabSwitch 
+} from './utils/analytics';
 
 export default function App() {
   const [currentTab, setCurrentTab] = useState<'quiz' | 'flowchart' | 'gallery'>('quiz');
@@ -65,10 +70,24 @@ export default function App() {
     const newHistory = [...pathHistory, newStep];
     setPathHistory(newHistory);
 
+    // Track answer event in GA
+    trackQuizAnswer(currentQuestionId, answer, newHistory.length);
+
     if (typeof nextTarget === 'number') {
       // Reached result!
       setResultId(nextTarget);
       playFanfareSound();
+
+      // Track completion event in GA
+      const targetResult = RESULTS_DATA[nextTarget];
+      if (targetResult) {
+        trackQuizComplete(
+          nextTarget,
+          targetResult.title,
+          targetResult.sPercentage,
+          targetResult.mPercentage
+        );
+      }
 
       // Launch celebration confetti
       try {
@@ -124,6 +143,7 @@ export default function App() {
         setCurrentTab={(tab) => {
           setInspectResultId(null);
           setCurrentTab(tab);
+          trackTabSwitch(tab);
         }}
         soundEnabled={sound}
         setSoundEnabled={handleToggleSound}
